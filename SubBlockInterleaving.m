@@ -7,12 +7,14 @@ function [NewIndexes, InterleavedCodedBits] = SubBlockInterleaving(InputCodedBit
     % бит
     NewIndexes = zeros(1, N);
     InterleavedCodedBits = zeros(1, N);
+
+    % Работаем в предположении, что N <= 32!!
     for n = 1:N
-        i = 32*n/N;
-        NewIndexes(n) = P(i)*(N/32)+mod(n, N/32);
-        
-        % получение выходной последовательности
-        InterleavedCodedBits(n) = InputCodedBits(NewIndexes(n) + 1);
+            i = floor(32*n/N);
+            NewIndexes(n) = floor(P(i)*(N/32)+mod(n - 1, N/32));
+            
+            % получение выходной последовательности
+            InterleavedCodedBits(n) = InputCodedBits(NewIndexes(n) + 1);
     end
 end    
 
