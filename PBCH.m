@@ -108,5 +108,14 @@ classdef PBCH
         function obj = PolarEncoding(obj) 
             obj.EncodedSequence = PBCH_PolarEncoding(obj.InterleavedBits, obj.NumOfBitsToEncode, obj.NumberOfParityCheckBits, obj.RateMatchingOutSeqLength, obj.QN_I);
         end
+
+        % Скремблирование
+        function obj = Scrambling(obj, InputBits)
+            % Последовательность Голда c(i) должна быть сформирована следующим образом 
+            gold_pack = gold_sequence(NcellID);
+            FirstGoldSeq = gold_pack(3, :); % в данном случае индекс строки 3 соответствует первой последоваетльности из 31 возможной
+            % Выходная последовательность
+            obj.ScrambledBits = PBCH_Scramble(InputBits, obj.L_max, obj.IndexesOfBitsInCandidateSSPBCH, obj.ThirdLSB, obj.SecondLSB, FirstGoldSeq);
+        end
     end
 end
