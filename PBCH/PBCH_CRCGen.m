@@ -1,4 +1,4 @@
-function datancrc = PBCH_CRC_gen(data)
+function datancrc = PBCH_CRCGen(data)
     %data -> data+crc
     D=[24 23 21 20 17 15 13 12 8 4 2 1 0];
     len=length(data);

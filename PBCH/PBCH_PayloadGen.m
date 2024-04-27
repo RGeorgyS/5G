@@ -1,4 +1,4 @@
-function interleaved = PBCH_interleaver(payload, SFN_PBCH, a_hrf, L_max_, block_index, k_ssb)
+function payload = PBCH_PayloadGen(payload, SFN_PBCH, a_hrf, L_max_, block_index, k_ssb)
     % A_ %payload size, any; 
     % SFN %system frame number; %10 bits; 
     % SFN_PBCH = SFN(4:-1:1); %4 bits; 
@@ -47,6 +47,7 @@ function interleaved = PBCH_interleaver(payload, SFN_PBCH, a_hrf, L_max_, block_
             interleaved(interleaveTable(jOTHER))=a(i);
             jOTHER = jOTHER+1;
         end
-    
     end
+    
+    payload = interleaved;
 end

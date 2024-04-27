@@ -1,4 +1,4 @@
-function ratematched = PBCH_rate_matching(data, K)
+function ratematched = PBCH_RateMatching(data, K)
     %data -> y -> e -> f
     E = 864;
     I_BIL = 0;
@@ -73,4 +73,3 @@ function ratematched = PBCH_rate_matching(data, K)
         end
     end
     ratematched = f;
-end
