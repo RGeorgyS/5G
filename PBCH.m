@@ -102,5 +102,11 @@ classdef PBCH
         function payload = PayloadGen(obj) %функция класса
             payload = PBCH_PayloadGen(obj.data, obj.SFN, obj.hrf, obj.L_max, obj.block_index, obj.k_ssb); %внешняя функция
         end
+        
+        % Реализация полярного кодирования 
+        % Необходимо добавить атрибуты!!
+        function obj = PolarEncoding(obj) 
+            obj.EncodedSequence = PBCH_PolarEncoding(obj.InterleavedBits, obj.NumOfBitsToEncode, obj.NumberOfParityCheckBits, obj.RateMatchingOutSeqLength, obj.QN_I);
+        end
     end
 end
