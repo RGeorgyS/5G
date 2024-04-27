@@ -32,14 +32,13 @@ function [QN_I, QN_F] = RateMatchingForPolarCode(InputBits, NumOfBitsToEncode, R
     % Вычитаем из набора индексов PolarSeq набор QN_Ftmp, причем порядок
     % должен остаться тем же (для этого устанавливаем setOrder = 'stable'
     QN_Itmp = setdiff(PolarSeq, QN_Ftmp, 'stable');
-    disp(QN_Itmp);
 
     % QN_I содержит (K + n_PC) = (NumOfBitsToEncode +
     % NumberOfParityCheckBits) самых надежных индексов из QN_Itmp.
     % Так как индексы в QN_Itmp расположены в порядке возрастания
     % надежности, то достаточно взять значения, начиная с индекса 
-    % (NumOfBitsToEncode + NumberOfParityCheckBits) до конца
-    QN_I = QN_Itmp(NumOfBitsToEncode + NumberOfParityCheckBits:end);
+    % length(PolarSeq) - (NumOfBitsToEncode + NumberOfParityCheckBits) до конца
+    QN_I = QN_Itmp(length(PolarSeq) - (NumOfBitsToEncode + NumberOfParityCheckBits):end);
     QN_F = setdiff(PolarSeq, QN_Itmp, 'stable');
 end
         
