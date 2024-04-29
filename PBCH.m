@@ -21,25 +21,33 @@ classdef PBCH
         L_max = 0;
         block_index = 0;
         k_ssb = 0 ;
-        E = 864;
+        RateMatchingOutSeqLength = 864; % в стандарте обозначено E
         I_BIL = 0;
         isPayload = false;
         isCRC = false;
         isScrambled = false;
         isChannelCodined = false;
         isRM = false;
+
+        % Индексы битов, которые будут переданы в блоке SS/PBCH
+        % (используется в функции скремблирования)
+        IndexesOfBitsInCandidateSSPBCH
+        % Третий наименее значимый бит SFN
+        ThirdLSB
+        % Второй наименее значимый бит SFN
+        SecondLSB
     end
 
     methods
         function obj = PBCH(data, SFN, hrf, L_max, block_index, k_ssb)
-            arguments
-                data (1:) {mustBeNumeric}
-                SFN (1, 4) {mustBeNumeric}
-                hrf (1,1) {mustBeNumeric}
-                L_max {mustBeNumeric}
-                block_index {mustBeNumeric}
-                k_ssb (1, 5) {mustBeNumeric}
-            end
+            % arguments
+            %     data (1:) {mustBeNumeric}
+            %     SFN (1, 4) {mustBeNumeric}
+            %     hrf (1,1) {mustBeNumeric}
+            %     L_max {mustBeNumeric}
+            %     block_index {mustBeNumeric}
+            %     k_ssb (1, 5) {mustBeNumeric}
+            % end
 
             if nargin < 1
                 obj.data = 0;
@@ -102,20 +110,25 @@ classdef PBCH
         function payload = PayloadGen(obj) %функция класса
             payload = PBCH_PayloadGen(obj.data, obj.SFN, obj.hrf, obj.L_max, obj.block_index, obj.k_ssb); %внешняя функция
         end
-        
-        % Реализация полярного кодирования 
-        % Необходимо добавить атрибуты!!
-        function obj = PolarEncoding(obj) 
-            obj.EncodedSequence = PBCH_PolarEncoding(obj.InterleavedBits, obj.NumOfBitsToEncode, obj.NumberOfParityCheckBits, obj.RateMatchingOutSeqLength, obj.QN_I);
-        end
 
         % Скремблирование
-        function obj = Scrambling(obj, InputBits)
+        function ScrambledBits = Scrambling(obj, InputBits)
             % Последовательность Голда c(i) должна быть сформирована следующим образом 
             gold_pack = gold_sequence(NcellID);
             FirstGoldSeq = gold_pack(3, :); % в данном случае индекс строки 3 соответствует первой последоваетльности из 31 возможной
             % Выходная последовательность
-            obj.ScrambledBits = PBCH_Scramble(InputBits, obj.L_max, obj.IndexesOfBitsInCandidateSSPBCH, obj.ThirdLSB, obj.SecondLSB, FirstGoldSeq);
+            ScrambledBits = PBCH_Scramble(InputBits, obj.L_max, obj.IndexesOfBitsInCandidateSSPBCH, obj.ThirdLSB, obj.SecondLSB, FirstGoldSeq);
+        end
+
+        % добавление CRC
+        function SeqWithCRC = AddingCRC(ScrambledBits) 
+            SeqWithCRC = PBCH_CRCGen(ScrambledBits);
+        end
+
+        % Реализация полярного кодирования 
+        function EncodedSequence = PolarEncoding(obj, InterleavedBits, NumOfBitsToEncode, NumberOfParityCheckBits) 
+            [QN_I, QN_F] = PBCH_RateMatchingForPolarCode(InputBits, NumOfBitsToEncode, obj.RateMatchingOutSeqLength, NumberOfParityCheckBits, PolarSeq, IndexesAfterSubBlockInterleaving);
+            EncodedSequence = PBCH_PolarEncoding(InterleavedBits, NumOfBitsToEncode, NumberOfParityCheckBits, obj.RateMatchingOutSeqLength, QN_I);
         end
     end
 end
