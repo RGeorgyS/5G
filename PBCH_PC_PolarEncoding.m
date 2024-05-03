@@ -1,32 +1,20 @@
-function EncodedSequence = PBCH_PolarEncoding(InputInterleavedBits, NumOfBitsToEncode, NumberOfParityCheckBits, RateMatchingOutSeqLength, QN_I)
-    % InputBits - последовательность входных бит
+% 3GPP TS 38.212 7.1.4 -> 5.3.1.2
+function EncodedSequence = PBCH_PC_PolarEncoding(InputInterleavedBits, NumberOfParityCheckBits, QN_I, Power)
+    % InputBits - последовательность входных бит длиной К
     % PowerToDetermineN - cтепень, в которую необходимо возвести 2, чтобы получить длину закодированной последовательнгости 
     % RateMatchingOutSeqLength 
     % K (NumOfBitsToEncode) - количество бит, которые предстоит кодировать
     % После кодирования мы получаем массив OutSequence длиной N = NumberOfEncodedBits = 2^n
     % NumberOfEncodedBits - длина выходной закодированной
     % последовательности
+    % Power - Степень двойки
 
     % NumberOfParityCheckBits = 0; % Количество битов проверки четности (number of parity check bits). В стандарте также n_PC
 
-    n_min = 5;
-    n_max = 9;
-    I_IL = 1;
+    I_IL = 1; %?
     nwm_PC = 0;
-    R_min = 1/8;
-
-    % Определение степени, в которую нужно возвести 2, чтобы получить 
-    % количество закодированных битов (NumberOfEncodedBits)
-    if RateMatchingOutSeqLength <= (9/8)*2^(log2(RateMatchingOutSeqLength)-1) && NumOfBitsToEncode/RateMatchingOutSeqLength < 9/16
-        n1 = ceil(log2(RateMatchingOutSeqLength)) - 1;
-    else
-        n1 = ceil(log2(RateMatchingOutSeqLength));
-    end
-    n2 = ceil(log2(NumOfBitsToEncode/R_min));
 
 
-    % Степень двойки
-    Power = max(min(n1, min(n2, n_max)), n_min);
     % Количество закодированных битов
     NumberOfEncodedBits = 2^Power;
 

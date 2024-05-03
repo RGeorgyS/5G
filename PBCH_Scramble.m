@@ -1,5 +1,6 @@
-% Функция скремблирования
+% 3GPP TS 38.212 7.1.2
 function ScrambledBits = PBCH_Scramble(InputBits, L, IndexesOfBitsInCandidateSSPBCH, ThirdLSB, SecondLSB, GoldSeq)
+
     % Длина входной последовательности
     A = length(InputBits);
     % L - количество претендующих SS/PBCH блоков в подкадре (is the number of

@@ -1,6 +1,5 @@
-% 3GPP TS 38.212 7.1.1
-function [payload, SFN2Bit, SFN3Bit, SSPBCHBits] = PBCH_PayloadGen(data, SFN_PBCH, a_hrf, L_max_, block_index, k_ssb)
-    % A_ %payload (input data) size, any; 
+function [payload, SFN2Bit, SFN3Bit, SSPBCHBits] = PBCH_PayloadGen(payload, SFN_PBCH, a_hrf, L_max_, block_index, k_ssb)
+    % A_ %payload size, any; 
     % SFN %system frame number; %10 bits; 
     % SFN_PBCH = SFN(4:-1:1); %4 bits; 
     % a_hrf = 5; %half frame bit; 
@@ -28,7 +27,7 @@ function [payload, SFN2Bit, SFN3Bit, SSPBCHBits] = PBCH_PayloadGen(data, SFN_PBC
         SSPBCHBits = [];
     end
     
-    a = [data, SFN_PBCH, a_hrf, L_massive];
+    a = [payload, SFN_PBCH, a_hrf, L_massive];
     
     %Interleaver%Перемежение
     
@@ -43,7 +42,6 @@ function [payload, SFN2Bit, SFN3Bit, SSPBCHBits] = PBCH_PayloadGen(data, SFN_PBC
     for i=1:A
         if i >= A_+1 && i <= A_+4 %SFN bits
             interleaved(interleaveTable(jSFN))=a(i);
-            %запоминание индексов 2 и 3 бит SFN
             if i == A_+2
                 SFN2Bit = interleaveTable(jSFN);
             end
@@ -57,13 +55,11 @@ function [payload, SFN2Bit, SFN3Bit, SSPBCHBits] = PBCH_PayloadGen(data, SFN_PBC
             interleaved(interleaveTable(jHRF))=a(i);
         elseif i >= A_+6 && i<=A+8 % L_massive
             interleaved(interleaveTable(jSSB))=a(i);
-            %запоминание индексов бит индексов бит SSPBCH
             if i == A_+8 && L_max_ == 10
-                SSPBCHBits(i - (A_ + 7)) = interleaveTable(jSSB);
+                SSPBCHBits[]
             elseif (i == A_+8 || i == A_+7) && L_max_ == 20
-                SSPBCHBits(i - (A_ + 7)) = interleaveTable(jSSB);
+                
             elseif (i == A_+8 || i == A_+7 || i == A_+7) && L_max_ == 60
-                SSPBCHBits(i - (A_ + 7)) = interleaveTable(jSSB);
             end
 
             jSSB = jSSB+1;

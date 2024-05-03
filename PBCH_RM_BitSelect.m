@@ -1,3 +1,4 @@
+% 3GPP TS 38.212 7.1.5 -> 5.4.1.2
 function bselect = PBCH_RM_BitSelect(data, E)
     y = data;
     e = zeros(1, E-1);
