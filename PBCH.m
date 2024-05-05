@@ -33,9 +33,9 @@ classdef PBCH
         % (используется в функции скремблирования)
         IndexesOfBitsInCandidateSSPBCH
         % Третий наименее значимый бит SFN
-        ThirdLSB
+        ThirdLSB = 0;
         % Второй наименее значимый бит SFN
-        SecondLSB
+        SecondLSB = 0;
     end
 
     methods
@@ -112,7 +112,7 @@ classdef PBCH
         end
 
         % Скремблирование
-        function ScrambledBits = Scrambling(obj, InputBits)
+        function ScrambledBits = Scrambling(obj, InputBits, NcellID)
             % Последовательность Голда c(i) должна быть сформирована следующим образом 
             gold_pack = gold_sequence(NcellID);
             FirstGoldSeq = gold_pack(3, :); % в данном случае индекс строки 3 соответствует первой последоваетльности из 31 возможной
