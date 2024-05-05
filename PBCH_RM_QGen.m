@@ -1,15 +1,15 @@
+% 3GPP TS 38.212 7.1.5 -> 5.4.1.1
 % Получение наборов индексов Q^N_I, Q^N_F
-function [QN_I, QN_F] = PBCH_RateMatchingForPolarCode(InputBits, NumOfBitsToEncode, RateMatchingOutSeqLength, NumberOfParityCheckBits, PolarSeq, IndexesAfterSubBlockInterleaving)
-    % InputBits - последовательность входных бит  
-    % NumOfBitsToEncode Количество закодированных битов. В стандарте обозначается K
+function [QN_I, QN_F] = PBCH_RM_QGen(NumOfBitsToEncode, RateMatchingOutSeqLength, NumberOfParityCheckBits, PolarSeq, IndexesAfterSubBlockInterleaving, Power) 
+    % NumOfBitsToEncode Количество входных битов для дальнейшего кодирования. В стандарте обозначается K
     % RateMatchingOutSeqLength - В стандарте обозначается E
     % NumberOfParityCheckBits или n_PC равно нулю. Количество битов проверки четности (number of parity check bits)
     % PolarSeq - последовательность индексов битов, расположенных по
     % возрастанию надежности (см. TS 38.212 5.3.1.2)
     % IndexesAfterSubBlockInterleaving - индексы битов после перемежения
 
-    % длина входной последовательности
-    N = length(InputBits);
+    % длина выходной последовательности после полярного кодирования
+    N = 2^Power;
     % Инициализируем множество QN_Ftmp
     QN_Ftmp = [];
     % Получение наборов индексов Q^N_I, Q^N_F

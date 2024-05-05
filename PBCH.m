@@ -1,4 +1,4 @@
-classdef PBCH
+classdef PBCH < handle
     % A_ %payload size, any; 
     % SFN %system frame number; %10 bits; 
     % SFN_PBCH = SFN(4:-1:1); %4 bits; 
@@ -17,25 +17,27 @@ classdef PBCH
     properties
         data = 0;
         SFN = 0;
-        hrf = 0;
+        hrf = 0;ThirdLSB
         L_max = 0;
         block_index = 0;
         k_ssb = 0 ;
         RateMatchingOutSeqLength = 864; % в стандарте обозначено E
         I_BIL = 0;
+         % Индексы битов, которые будут переданы в блоке SS/PBCH
+        % (используется в функции скремблирования)
+        IndexesOfBitsInCandidateSSPBCH
+        % Третий наименее значимый бит SFN
+        SFN3Bit
+        % Второй наименее значимый бит SFN
+        SFN2Bit
+
         isPayload = false;
         isCRC = false;
         isScrambled = false;
         isChannelCodined = false;
         isRM = false;
 
-        % Индексы битов, которые будут переданы в блоке SS/PBCH
-        % (используется в функции скремблирования)
-        IndexesOfBitsInCandidateSSPBCH
-        % Третий наименее значимый бит SFN
-        ThirdLSB = 0;
-        % Второй наименее значимый бит SFN
-        SecondLSB = 0;
+       
     end
 
     methods
@@ -107,28 +109,44 @@ classdef PBCH
             end
         end
 
-        function payload = PayloadGen(obj) %функция класса
-            payload = PBCH_PayloadGen(obj.data, obj.SFN, obj.hrf, obj.L_max, obj.block_index, obj.k_ssb); %внешняя функция
+        function PayloadGen(obj) %функция класса
+           [obj.data, obj.SFN2Bit, obj.SFN3Bit, obj.IndexesOfBitsInCandidateSSPBCH] = PBCH_PayloadGen(obj.data, obj.SFN, obj.hrf, obj.L_max, obj.block_index, obj.k_ssb); %внешняя функция первичного перемежения
         end
 
         % Скремблирование
-        function ScrambledBits = Scrambling(obj, InputBits, NcellID)
+        function Scrambling(obj)
             % Последовательность Голда c(i) должна быть сформирована следующим образом 
             gold_pack = gold_sequence(NcellID);
             FirstGoldSeq = gold_pack(3, :); % в данном случае индекс строки 3 соответствует первой последоваетльности из 31 возможной
             % Выходная последовательность
-            ScrambledBits = PBCH_Scramble(InputBits, obj.L_max, obj.IndexesOfBitsInCandidateSSPBCH, obj.ThirdLSB, obj.SecondLSB, FirstGoldSeq);
+            obj.data = PBCH_Scramble(obj.data, obj.L_max, obj.IndexesOfBitsInCandidateSSPBCH, obj.SFN3Bit, obj.SFN2Bit, FirstGoldSeq);
         end
 
         % добавление CRC
-        function SeqWithCRC = AddingCRC(ScrambledBits) 
-            SeqWithCRC = PBCH_CRCGen(ScrambledBits);
+        function AddingCRC(obj) 
+            obj.data = PBCH_CRCGen(obj.data);
+        end
+        
+        % Перемежение (Interleaving)
+        
+        % Реализация полярного кодирования 
+        function PolarEncoding(obj, NumberOfParityCheckBits)
+            Power = PBCH_PC_PowerGen(length(obj.data), obj.RateMatchingOutSeqLength);
+            interleaverIndexes = PBCH_RM_SBInterleaverIndexes(2^Power);
+            [QN_I, QN_F] = PBCH_RM_QGen(Power, length(obj.data), obj.RateMatchingOutSeqLength, NumberOfParityCheckBits, PolarSeq, interleaverIndexes);
+            %interleaver??
+            obj.data = PBCH_PC_PolarEncoding(obj.data, NumberOfParityCheckBits, obj.RateMatchingOutSeqLength, QN_I);
         end
 
         % Реализация полярного кодирования 
-        function EncodedSequence = PolarEncoding(obj, InterleavedBits, NumOfBitsToEncode, NumberOfParityCheckBits) 
-            [QN_I, QN_F] = PBCH_RateMatchingForPolarCode(InputBits, NumOfBitsToEncode, obj.RateMatchingOutSeqLength, NumberOfParityCheckBits, PolarSeq, IndexesAfterSubBlockInterleaving);
-            EncodedSequence = PBCH_PolarEncoding(InterleavedBits, NumOfBitsToEncode, NumberOfParityCheckBits, obj.RateMatchingOutSeqLength, QN_I);
+        function RateMatching(obj)
+            interleaverIndexes = PBCH_RM_SBInterleaverIndexes(length(obj.data));
+            for n = 0:(length(obj.data)-1)
+                obj.data(n+1) = obj.data(interleaverIndexes(n+1));
+            end
+            obj.data = PBCH_RM_BitSelect(obj.data, obj.RateMatchingOutSeqLength);
+            obj.data = PBCH_RM_BitInterleaver(obj.data, obj.I_BIL);
+            
         end
     end
 end

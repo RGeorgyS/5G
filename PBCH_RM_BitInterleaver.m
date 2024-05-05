@@ -1,3 +1,4 @@
+% 3GPP TS 38.212 7.1.5 -> 5.4.1.3
 function bitinterleaved = PBCH_RM_BitInterleaver(data, I_BIL)
     %T(T+1)/2 >= E
     e = data;

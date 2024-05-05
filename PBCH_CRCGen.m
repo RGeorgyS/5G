@@ -1,3 +1,4 @@
+% 3GPP TS 38.212 7.1.3
 function datancrc = PBCH_CRCGen(data)
     %data -> data+crc
     D=[24 23 21 20 17 15 13 12 8 4 2 1 0];
