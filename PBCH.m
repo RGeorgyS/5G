@@ -126,15 +126,15 @@ classdef PBCH < handle
         function AddingCRC(obj) 
             obj.data = PBCH_CRCGen(obj.data);
         end
-        
-        % Перемежение (Interleaving)
-        
+
         % Реализация полярного кодирования 
         function PolarEncoding(obj, NumberOfParityCheckBits)
             Power = PBCH_PC_PowerGen(length(obj.data), obj.RateMatchingOutSeqLength);
             interleaverIndexes = PBCH_RM_SBInterleaverIndexes(2^Power);
             [QN_I, QN_F] = PBCH_RM_QGen(Power, length(obj.data), obj.RateMatchingOutSeqLength, NumberOfParityCheckBits, PolarSeq, interleaverIndexes);
-            %interleaver??
+            % Операция перемежения
+            obj.data = PBCH_PC_Interleaving(obj.data, obj.I_BIL);
+            % Полярное кодирование
             obj.data = PBCH_PC_PolarEncoding(obj.data, NumberOfParityCheckBits, obj.RateMatchingOutSeqLength, QN_I);
         end
 
