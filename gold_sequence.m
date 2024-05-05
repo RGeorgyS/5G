@@ -1,4 +1,4 @@
-function [gold_pack] = gold_sequence(NcellID)
+function [gold_pack] = gold_sequence
 % Данная функция предназначена для генерации всевозможных
 % последовательностей Голда (всего 31 вариант). Результат - матрица 
     m_seq = zeros([1 31], 'int8');

@@ -115,8 +115,10 @@ classdef PBCH < handle
 
         % Скремблирование
         function Scrambling(obj)
-            % Последовательность Голда c(i) должна быть сформирована следующим образом 
-            gold_pack = gold_sequence(NcellID);
+            % Последовательность Голда c(i) должна быть сформирована следующим образом
+            % Вызываем функцию gold_sequence и получаем матрицу 33x31;
+            % последовательности Голда начинаются с 3 строки
+            gold_pack = gold_sequence;
             FirstGoldSeq = gold_pack(3, :); % в данном случае индекс строки 3 соответствует первой последоваетльности из 31 возможной
             % Выходная последовательность
             obj.data = PBCH_Scramble(obj.data, obj.L_max, obj.IndexesOfBitsInCandidateSSPBCH, obj.SFN3Bit, obj.SFN2Bit, FirstGoldSeq);
