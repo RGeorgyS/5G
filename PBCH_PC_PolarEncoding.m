@@ -11,7 +11,6 @@ function EncodedSequence = PBCH_PC_PolarEncoding(InputInterleavedBits, NumberOfP
 
     % NumberOfParityCheckBits = 0; % Количество битов проверки четности (number of parity check bits). В стандарте также n_PC
 
-    I_IL = 1; %?
     nwm_PC = 0;
 
 

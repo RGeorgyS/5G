@@ -30,8 +30,10 @@ function [payload, SFN2Bit, SFN3Bit, SSPBCHBits] = PBCH_PayloadGen(data, SFN_PBC
     
     a = [data, SFN_PBCH, a_hrf, L_massive];
     
-    %Interleaver%Перемежение
+    % Таблица для организации перемежения
+    interleaveTable = 1.+[16 23 18 17 8 30 10 6 24 7 0 5 3 2 1 4 9 11 12 13 14 15 19 20 21 22 25 26 27 28 29 31];
     
+    %Interleaver%Перемежение
     A=A_+8;
     jSFN=0+1;
     jHRF=10+1;

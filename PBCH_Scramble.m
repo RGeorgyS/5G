@@ -1,5 +1,5 @@
 % 3GPP TS 38.212 7.1.2
-function ScrambledBits = PBCH_Scramble(InputBits, L, IndexesOfBitsInCandidateSSPBCH, ThirdLSB, SecondLSB, GoldSeq)
+function ScrambledBits = PBCH_Scramble(InputBits, L, IndexesOfBitsInCandidateSSPBCH, ThirdLSB, SecondLSB)
 
     % Длина входной последовательности
     A = length(InputBits);
@@ -25,6 +25,12 @@ function ScrambledBits = PBCH_Scramble(InputBits, L, IndexesOfBitsInCandidateSSP
     elseif ThirdLSB == 1 && SecondLSB == 1
         v = 3;
     end
+    
+    % Основную скремблирующую последовательность c(i) извлекаем из файла
+    % ScramblingSequence
+    ScramblingSequenceFile = matfile("ScramblingSequenceFile.mat");
+    % Записываем массив 1x1046975 в переменную ScramblingSeq
+    ScramblingSeq = ScramblingSequenceFile.ScramblingSequence;
 
     % Генерируем вспомогательную скремблирующую последовательность s(i)
     i = 1;
@@ -37,7 +43,7 @@ function ScrambledBits = PBCH_Scramble(InputBits, L, IndexesOfBitsInCandidateSSP
         if ismember(i, IndexesOfBitsInCandidateSSPBCH)
             s(i) = 0;
         else
-            s(i) = GoldSeq(j + v*M);
+            s(i) = ScramblingSeq(j + v*M);
             j = j + 1;
         end
         i = i + 1;

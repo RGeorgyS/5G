@@ -17,19 +17,19 @@ classdef PBCH < handle
     properties
         data = 0;
         SFN = 0;
-        hrf = 0;ThirdLSB
+        hrf = 0;
         L_max = 0;
         block_index = 0;
         k_ssb = 0 ;
         RateMatchingOutSeqLength = 864; % в стандарте обозначено E
         I_BIL = 0;
-         % Индексы битов, которые будут переданы в блоке SS/PBCH
+        % Индексы битов, которые будут переданы в блоке SS/PBCH
         % (используется в функции скремблирования)
         IndexesOfBitsInCandidateSSPBCH
-        % Третий наименее значимый бит SFN
-        SFN3Bit
-        % Второй наименее значимый бит SFN
-        SFN2Bit
+        % Индекс третьего наименее значимого бита SFN
+        SFN3Bit = 0;
+        % Индекс второго наименее значимого бита SFN
+        SFN2Bit = 0;
 
         isPayload = false;
         isCRC = false;
@@ -115,13 +115,12 @@ classdef PBCH < handle
 
         % Скремблирование
         function Scrambling(obj)
-            % Последовательность Голда c(i) должна быть сформирована следующим образом
-            % Вызываем функцию gold_sequence и получаем матрицу 33x31;
-            % последовательности Голда начинаются с 3 строки
-            gold_pack = gold_sequence;
-            FirstGoldSeq = gold_pack(3, :); % в данном случае индекс строки 3 соответствует первой последоваетльности из 31 возможной
-            % Выходная последовательность
-            obj.data = PBCH_Scramble(obj.data, obj.L_max, obj.IndexesOfBitsInCandidateSSPBCH, obj.SFN3Bit, obj.SFN2Bit, FirstGoldSeq);
+            % Третий наименее значимый бит SFN
+            ThirdLSB = obj.data(obj.SFN3Bit);
+            % Второй наименее значимый бит SFN
+            SecondLSB = obj.data(obj.SFN2Bit);
+            % Выходная последовательность 
+            obj.data = PBCH_Scramble(obj.data, obj.L_max, obj.IndexesOfBitsInCandidateSSPBCH, ThirdLSB, SecondLSB);
         end
 
         % добавление CRC
