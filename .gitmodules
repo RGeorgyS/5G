@@ -1,0 +1,3 @@
+[submodule "PBCH_Gen"]
+	path = PBCH_Gen
+	url = https://github.com/RGeorgyS/5G.git
