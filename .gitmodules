@@ -1,6 +1,0 @@
-[submodule "SS_Reciever"]
-	path = SS_Reciever
-	url = https://github.com/RGeorgyS/5G.git
-[submodule "PBCH_Gen"]
-	path = PBCH_Gen
-	url = https://github.com/RGeorgyS/5G.git
