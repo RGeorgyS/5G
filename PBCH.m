@@ -17,7 +17,7 @@ classdef PBCH < handle
     properties
         data = 0;
         SFN = 0;
-        hrf = 0;ThirdLSB
+        hrf = 0;
         L_max = 0;
         block_index = 0;
         k_ssb = 0 ;
@@ -30,6 +30,10 @@ classdef PBCH < handle
         SFN3Bit
         % Второй наименее значимый бит SFN
         SFN2Bit
+        
+        % 3GPP TS 38.211 7.3.2.3 
+        nRNTI;
+        nID;
 
         isPayload = false;
         isCRC = false;
@@ -144,6 +148,12 @@ classdef PBCH < handle
             end
             obj.data = PBCH_RM_BitSelect(obj.data, obj.RateMatchingOutSeqLength);
             obj.data = PBCH_RM_BitInterleaver(obj.data, obj.I_BIL);
+
+        function Scrambling2(obj)
+            obj.data = PBCH_RM_BitInterleaver(obj.data, nRNTI, nID);
+
+        function Scrambling2(obj)
+            obj.data = PBCH_PDCCH_Modulation(obj.data);
             
         end
     end
